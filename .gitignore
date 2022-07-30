@@ -13,3 +13,5 @@ danser.log
 assets.dpak
 api.txt
 *.osr
+.vscode
+__debug_bin.exe

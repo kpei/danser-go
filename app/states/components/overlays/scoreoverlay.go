@@ -2,6 +2,13 @@ package overlays
 
 import (
 	"fmt"
+	"log"
+	"math"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/wieku/danser-go/app/audio"
 	"github.com/wieku/danser-go/app/beatmap"
@@ -30,12 +37,6 @@ import (
 	color2 "github.com/wieku/danser-go/framework/math/color"
 	"github.com/wieku/danser-go/framework/math/mutils"
 	"github.com/wieku/danser-go/framework/math/vector"
-	"log"
-	"math"
-	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
 )
 
 const (
@@ -326,7 +327,7 @@ func (overlay *ScoreOverlay) hitReceived(c *graphics.Cursor, time int64, number 
 	object := overlay.ruleset.GetBeatMap().HitObjects[number]
 
 	if result&(osu.BaseHitsM) > 0 {
-		overlay.results.AddResult(time, result, position, object)
+		overlay.results.AddResult(time, result, "", 0, position, object)
 	}
 
 	_, hC := object.(*objects.Circle)

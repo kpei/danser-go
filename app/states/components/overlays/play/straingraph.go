@@ -1,6 +1,8 @@
 package play
 
 import (
+	"math"
+
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/wieku/danser-go/app/rulesets/osu"
 	"github.com/wieku/danser-go/app/rulesets/osu/performance"
@@ -15,7 +17,6 @@ import (
 	"github.com/wieku/danser-go/framework/math/math32"
 	"github.com/wieku/danser-go/framework/math/mutils"
 	"github.com/wieku/danser-go/framework/math/vector"
-	"math"
 )
 
 type StrainGraph struct {
@@ -30,6 +31,8 @@ type StrainGraph struct {
 	fbo         *buffer.Framebuffer
 	leftSprite  *sprite.Sprite
 	rightSprite *sprite.Sprite
+
+	spline *curves.Curve
 
 	screenWidth float64
 
@@ -58,6 +61,14 @@ func NewStrainGraph(ruleset *osu.OsuRuleSet) *StrainGraph {
 
 	return graph
 }
+func (graph *StrainGraph) Progress() float64 {
+	return graph.progress
+}
+
+func (graph *StrainGraph) StrainY(progress float64) float32 {
+	spline := graph.GenerateCurve()
+	return math32.Max(spline.PointAt(float32(progress)).Y, 0) / graph.maxStrain
+}
 
 func (graph *StrainGraph) Update(time float64) {
 	graph.time = time
@@ -66,7 +77,7 @@ func (graph *StrainGraph) Update(time float64) {
 	graph.rightSprite.SetCutX(graph.progress)
 }
 
-func (graph *StrainGraph) generateCurve() curves.Curve {
+func (graph *StrainGraph) GenerateCurve() curves.Curve {
 	// Number of strain sections to merge
 	// For example for a 5-minute map we will get 10 sections, so 4s because one section is 400ms
 	// It's also scaled with width of the strain graph so wider one shows more detailed graph
@@ -119,7 +130,7 @@ func (graph *StrainGraph) drawFBO(batch *batch.QuadBatch) {
 	lWidth := float32(graph.fbo.GetWidth())
 	lHeight := float32(graph.fbo.GetHeight()) - 1
 
-	spline := graph.generateCurve()
+	spline := graph.GenerateCurve()
 
 	lV := math32.Max(spline.PointAt(0).X, 0)
 

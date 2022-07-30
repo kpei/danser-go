@@ -2,6 +2,13 @@ package states
 
 import (
 	"fmt"
+	"log"
+	"math"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strconv"
+
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/wieku/danser-go/app/beatmap"
 	"github.com/wieku/danser-go/app/beatmap/difficulty"
@@ -29,12 +36,6 @@ import (
 	"github.com/wieku/danser-go/framework/math/vector"
 	"github.com/wieku/danser-go/framework/qpc"
 	"github.com/wieku/danser-go/framework/statistic"
-	"log"
-	"math"
-	"os"
-	"path/filepath"
-	"runtime"
-	"strconv"
 )
 
 const windowsOffset = 15
@@ -708,7 +709,8 @@ func (player *Player) Draw(float64) {
 		player.lastProgressMsF = player.progressMsF
 	}
 
-	cursorColors := settings.Cursor.GetColors(settings.DIVIDES, len(player.controller.GetCursors()), player.Scl, player.cursorGlider.GetValue())
+	// cursorColors := settings.Cursor.GetColors(settings.DIVIDES, len(player.controller.GetCursors()), player.Scl, player.cursorGlider.GetValue())
+	var cursorColors = []color2.Color{{R: 0.18, G: 0.525, B: 0.87, A: float32(player.cursorGlider.GetValue())}, {R: 0.93, G: 0.32, B: 0.33, A: float32(player.cursorGlider.GetValue())}}
 
 	if player.overlay != nil {
 		player.drawOverlayPart(player.overlay.DrawBackground, cursorColors, cameras[0])
