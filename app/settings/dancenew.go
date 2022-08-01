@@ -39,6 +39,9 @@ func initCursorDance() *cursorDance {
 			Pippi: []*pippi{
 				DefaultsFactory.InitPippi(),
 			},
+			Naitsirk: []*naitsirk{
+				DefaultsFactory.InitNaitsirk(),
+			},
 		},
 	}
 }
@@ -88,4 +91,5 @@ type moverSettings struct {
 	ExGon      []*exgon    `new:"InitExGon"`
 	Linear     []*linear   `new:"InitLinear"`
 	Pippi      []*pippi    `new:"InitPippi"`
+	Naitsirk   []*naitsirk `new:"InitNaitsirk"`
 }

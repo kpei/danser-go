@@ -17,3 +17,5 @@ danser-core.*
 libdanser*
 api.txt
 *.osr
+.vscode
+ff*.*

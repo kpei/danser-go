@@ -142,3 +142,15 @@ func (d *defaultsFactory) InitPippi() *pippi {
 		SpinnerRadius:    100,
 	}
 }
+
+type naitsirk struct {
+	WaitForPreempt bool
+	ReactionTime   float64 `min:"10" max:"500" format:"%.0fms"`
+}
+
+func (d *defaultsFactory) InitNaitsirk() *naitsirk {
+	return &naitsirk{
+		WaitForPreempt: true,
+		ReactionTime:   100,
+	}
+}
