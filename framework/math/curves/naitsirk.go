@@ -19,7 +19,7 @@ func NewNaitsirk(points, velocities []vector.Vector2f, deltatimes []float32) Nai
 	return Naitsirk{points, velocities, dt}
 }
 
-func s(x0, x1, v0, v1 vector.Vector2f, dt, t float32) vector.Vector2f {
+func S(x0, x1, v0, v1 vector.Vector2f, dt, t float32) vector.Vector2f {
 	p1 := v1.Sub(v0).Scl(math32.Pow(t, 2) / (2 * dt))
 	p2 := (x1.Sub(x0).Scl(0.5).Sub(v0.Add(v1).Scl(0.25 * dt))).Scl(math32.Cos(math32.Pi * t / dt))
 	p3 := v0.Scl(t)
@@ -39,7 +39,7 @@ func (c Naitsirk) PointAt(t float32) vector.Vector2f {
 		if (tS >= timeElapsed) && (tS <= (timeElapsed + deltaTime)) {
 			x0, x1 := c.points[i], c.points[i+1]
 			v0, v1 := c.velocities[i].Sub(c.points[i]), c.velocities[i+1].Sub(c.points[i+1])
-			pos := s(x0, x1, v0, v1, deltaTime, tS-timeElapsed)
+			pos := S(x0, x1, v0, v1, deltaTime, tS-timeElapsed)
 			return pos
 		}
 		timeElapsed += deltaTime

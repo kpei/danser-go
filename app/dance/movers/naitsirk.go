@@ -16,7 +16,7 @@ func NewNaitsirkMover() MultiPointMover {
 	return &NaitsirkMover{basicMover: &basicMover{}}
 }
 
-func getVelocity(x0, x1 vector.Vector2f, dt float32) vector.Vector2f {
+func GetVelocity(x0, x1 vector.Vector2f, dt float32) vector.Vector2f {
 	div := dt / 100
 	return x1.Sub(x0).Scl(1 / div)
 }
@@ -45,7 +45,7 @@ func (mover *NaitsirkMover) SetObjects(objs []objects.IHitObject) int {
 		}
 
 		oPrev := objs[i-1]
-		velChange := getVelocity(
+		velChange := GetVelocity(
 			oPrev.GetStackedEndPositionMod(mover.diff.Mods),
 			oNext.GetStackedStartPositionMod(mover.diff.Mods),
 			float32(oNext.GetStartTime()-oPrev.GetEndTime()),

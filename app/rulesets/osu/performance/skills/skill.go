@@ -1,11 +1,12 @@
 package skills
 
 import (
+	"math"
+	"sort"
+
 	"github.com/wieku/danser-go/app/beatmap/difficulty"
 	"github.com/wieku/danser-go/app/rulesets/osu/performance/preprocessing"
 	"github.com/wieku/danser-go/framework/math/mutils"
-	"math"
-	"sort"
 )
 
 type Skill struct {
@@ -39,6 +40,9 @@ type Skill struct {
 
 	// Keeps track of previous DifficultyObjects for strain section calculations
 	Previous []*preprocessing.DifficultyObject
+
+	// Keeps track of next DifficultyObjects for strain section calculations
+	Next []*preprocessing.DifficultyObject
 
 	// The current strain level
 	CurrentStrain float64
@@ -106,14 +110,15 @@ func (skill *Skill) processInternal(current *preprocessing.DifficultyObject) {
 }
 
 // Processes given DifficultyObject
-func (skill *Skill) Process(current *preprocessing.DifficultyObject) {
+func (skill *Skill) Process(current []*preprocessing.DifficultyObject) {
 	if len(skill.Previous) > skill.HistoryLength {
 		skill.Previous = skill.Previous[len(skill.Previous)-skill.HistoryLength:]
 	}
 
-	skill.processInternal(current)
+	skill.Next = current[1:]
+	skill.processInternal(current[0])
 
-	skill.Previous = append(skill.Previous, current)
+	skill.Previous = append(skill.Previous, current[0])
 }
 
 func (skill *Skill) GetPrevious(i int) *preprocessing.DifficultyObject {
@@ -122,6 +127,14 @@ func (skill *Skill) GetPrevious(i int) *preprocessing.DifficultyObject {
 	}
 
 	return skill.Previous[len(skill.Previous)-1-i]
+}
+
+func (skill *Skill) GetNext(i int) *preprocessing.DifficultyObject {
+	if len(skill.Next)-1-i < 0 {
+		return nil
+	}
+
+	return skill.Next[i]
 }
 
 func (skill *Skill) GetCurrentStrainPeaks() []float64 {

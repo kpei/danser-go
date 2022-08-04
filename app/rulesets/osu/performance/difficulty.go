@@ -2,12 +2,13 @@ package performance
 
 import (
 	"fmt"
+	"log"
+	"math"
+
 	"github.com/wieku/danser-go/app/beatmap/difficulty"
 	"github.com/wieku/danser-go/app/beatmap/objects"
 	"github.com/wieku/danser-go/app/rulesets/osu/performance/preprocessing"
 	"github.com/wieku/danser-go/app/rulesets/osu/performance/skills"
-	"log"
-	"math"
 )
 
 const (
@@ -53,6 +54,9 @@ type StrainPeaks struct {
 
 	// Flashlight peaks
 	Flashlight []float64
+
+	// Coordination peaks
+	Coordination []float64
 
 	// Total contains aim, speed and flashlight peaks passed through star rating formula
 	Total []float64
@@ -144,18 +148,20 @@ func CalculateSingle(objects []objects.IHitObject, diff *difficulty.Difficulty, 
 	aimNoSlidersSkill := skills.NewAimSkill(diff, false, experimental)
 	speedSkill := skills.NewSpeedSkill(diff, experimental)
 	flashlightSkill := skills.NewFlashlightSkill(diff, experimental)
+	coordinationSkill := skills.NewCoordinationSkill(diff, experimental)
 
 	attr := Attributes{}
 
 	addObjectToAttribs(objects[0], &attr)
 
-	for i, o := range diffObjects {
+	for i, _ := range diffObjects {
 		addObjectToAttribs(objects[i+1], &attr)
 
-		aimSkill.Process(o)
-		aimNoSlidersSkill.Process(o)
-		speedSkill.Process(o)
-		flashlightSkill.Process(o)
+		aimSkill.Process(diffObjects[i:])
+		aimNoSlidersSkill.Process(diffObjects[i:])
+		speedSkill.Process(diffObjects[i:])
+		flashlightSkill.Process(diffObjects[i:])
+		coordinationSkill.Process(diffObjects[i:])
 	}
 
 	return getStars(aimSkill, aimNoSlidersSkill, speedSkill, flashlightSkill, diff, attr, experimental)
@@ -176,6 +182,7 @@ func CalculateStep(objects []objects.IHitObject, diff *difficulty.Difficulty, ex
 	aimNoSlidersSkill := skills.NewAimSkill(diff, false, experimental)
 	speedSkill := skills.NewSpeedSkill(diff, experimental)
 	flashlightSkill := skills.NewFlashlightSkill(diff, experimental)
+	coordinationSkill := skills.NewCoordinationSkill(diff, experimental)
 
 	stars := make([]Attributes, 1, len(objects))
 
@@ -183,14 +190,15 @@ func CalculateStep(objects []objects.IHitObject, diff *difficulty.Difficulty, ex
 
 	lastProgress := -1
 
-	for i, o := range diffObjects {
+	for i, _ := range diffObjects {
 		attr := stars[i]
 		addObjectToAttribs(objects[i+1], &attr)
 
-		aimSkill.Process(o)
-		aimNoSlidersSkill.Process(o)
-		speedSkill.Process(o)
-		flashlightSkill.Process(o)
+		aimSkill.Process(diffObjects[i:])
+		aimNoSlidersSkill.Process(diffObjects[i:])
+		speedSkill.Process(diffObjects[i:])
+		flashlightSkill.Process(diffObjects[i:])
+		coordinationSkill.Process(diffObjects[i:])
 
 		stars = append(stars, getStars(aimSkill, aimNoSlidersSkill, speedSkill, flashlightSkill, diff, attr, experimental))
 
@@ -216,25 +224,28 @@ func CalculateStrainPeaks(objects []objects.IHitObject, diff *difficulty.Difficu
 	aimSkill := skills.NewAimSkill(diff, true, experimental)
 	speedSkill := skills.NewSpeedSkill(diff, experimental)
 	flashlightSkill := skills.NewFlashlightSkill(diff, experimental)
+	coordinationSkill := skills.NewCoordinationSkill(diff, experimental)
 
-	for _, o := range diffObjects {
-		aimSkill.Process(o)
-		speedSkill.Process(o)
-		flashlightSkill.Process(o)
+	for i, _ := range diffObjects {
+		aimSkill.Process(diffObjects[i:])
+		speedSkill.Process(diffObjects[i:])
+		flashlightSkill.Process(diffObjects[i:])
+		coordinationSkill.Process(diffObjects[i:])
 	}
 
 	peaks := StrainPeaks{
-		Aim:        aimSkill.GetCurrentStrainPeaks(),
-		Speed:      speedSkill.GetCurrentStrainPeaks(),
-		Flashlight: flashlightSkill.GetCurrentStrainPeaks(),
+		Aim:          aimSkill.GetCurrentStrainPeaks(),
+		Speed:        speedSkill.GetCurrentStrainPeaks(),
+		Flashlight:   flashlightSkill.GetCurrentStrainPeaks(),
+		Coordination: coordinationSkill.GetCurrentStrainPeaks(),
 	}
 
-	peaks.Total = make([]float64, len(peaks.Aim))
+	peaks.Total = peaks.Coordination
 
-	for i := 0; i < len(peaks.Aim); i++ {
-		stars := getStarsFromRawValues(peaks.Aim[i], peaks.Aim[i], peaks.Speed[i], peaks.Flashlight[i], diff, Attributes{}, experimental)
-		peaks.Total[i] = stars.Total
-	}
+	// for i := 0; i < len(peaks.Aim); i++ {
+	// 	stars := getStarsFromRawValues(peaks.Aim[i], peaks.Aim[i], peaks.Speed[i], peaks.Flashlight[i], diff, Attributes{}, experimental)
+	// 	peaks.Total[i] = stars.Total
+	// }
 
 	return peaks
 }

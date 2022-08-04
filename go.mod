@@ -30,18 +30,31 @@ require (
 	github.com/tklauser/go-sysconf v0.3.8 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/wieku/rplpa v0.0.0-20210919131836-bff7a920f6e1
-	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d
-	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654
-	golang.org/x/text v0.3.6
+	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f
+	golang.org/x/text v0.3.7
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
 
 require (
 	github.com/sqweek/dialog v0.0.0-20220504154117-be45b268883a
-	golang.org/x/exp v0.0.0-20220312040426-20fd27f61765
+	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 )
 
-require github.com/TheTitanrain/w32 v0.0.0-20180517000239-4f5cfb03fabf // indirect
+require (
+	git.sr.ht/~sbinet/gg v0.3.1 // indirect
+	github.com/TheTitanrain/w32 v0.0.0-20180517000239-4f5cfb03fabf // indirect
+	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
+	github.com/go-fonts/liberation v0.2.0 // indirect
+	github.com/go-latex/latex v0.0.0-20210823091927-c0d11ff05a81 // indirect
+	github.com/go-pdf/fpdf v0.6.0 // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/hereisjohnny2/go-integrals v0.0.0-20220120235332-a2fecdbc59fa // indirect
+	github.com/khezen/rootfinding v1.0.1 // indirect
+	golang.org/x/tools v0.1.12 // indirect
+	gonum.org/v1/gonum v0.11.0 // indirect
+	gonum.org/v1/plot v0.11.0 // indirect
+)
 
 require (
 	//github.com/neclepsio/imgui-go/v4 v4.0.0-20220215070259-092710ff7bb1

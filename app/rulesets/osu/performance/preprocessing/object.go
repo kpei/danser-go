@@ -1,11 +1,12 @@
 package preprocessing
 
 import (
+	"math"
+
 	"github.com/wieku/danser-go/app/beatmap/difficulty"
 	"github.com/wieku/danser-go/app/beatmap/objects"
 	"github.com/wieku/danser-go/framework/math/math32"
 	"github.com/wieku/danser-go/framework/math/vector"
-	"math"
 )
 
 const (
@@ -42,18 +43,24 @@ type DifficultyObject struct {
 	TravelTime float64
 
 	StrainTime float64
+
+	NormalizedStartPosition vector.Vector2f
+
+	NormalizedEndPosition vector.Vector2f
 }
 
 func NewDifficultyObject(hitObject, lastLastObject, lastObject objects.IHitObject, d *difficulty.Difficulty, experimental bool) *DifficultyObject {
 	obj := &DifficultyObject{
-		diff:           d,
-		BaseObject:     hitObject,
-		lastObject:     lastObject,
-		lastLastObject: lastLastObject,
-		DeltaTime:      (hitObject.GetStartTime() - lastObject.GetStartTime()) / d.Speed,
-		StartTime:      hitObject.GetStartTime() / d.Speed,
-		EndTime:        hitObject.GetEndTime() / d.Speed,
-		Angle:          math.NaN(),
+		diff:                    d,
+		BaseObject:              hitObject,
+		lastObject:              lastObject,
+		lastLastObject:          lastLastObject,
+		DeltaTime:               (hitObject.GetStartTime() - lastObject.GetStartTime()) / d.Speed,
+		StartTime:               hitObject.GetStartTime() / d.Speed,
+		EndTime:                 hitObject.GetEndTime() / d.Speed,
+		Angle:                   math.NaN(),
+		NormalizedStartPosition: hitObject.GetStackedStartPositionMod(d.Mods).Scl(float32(1 / d.CircleRadius)),
+		NormalizedEndPosition:   hitObject.GetStackedEndPositionMod(d.Mods).Scl(float32(1 / d.CircleRadius)),
 	}
 
 	obj.StrainTime = math.Max(obj.DeltaTime, MinDeltaTime)
